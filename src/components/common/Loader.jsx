@@ -1,9 +1,7 @@
-export default function Loader() {
-  return (
-    <div className="text-center mt-5">
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  );
-}
+const Loader = () => (
+  <div style={{ textAlign: "center", marginTop: 50 }}>
+    <h3>Loading...</h3>
+  </div>
+);
+
+export default Loader;

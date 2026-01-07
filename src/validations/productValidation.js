@@ -1,17 +1,17 @@
-export const validateProduct = (p) => {
+export const validateProduct = (values) => {
   const errors = {};
 
-  if (!p.ProductCode?.trim())
-    errors.ProductCode = "Product Code is required";
+  if (!values.name || values.name.trim() === "") {
+    errors.name = "Product name is required";
+  }
 
-  if (!p.ProductName?.trim())
-    errors.ProductName = "Product Name is required";
+  if (!values.price || values.price <= 0) {
+    errors.price = "Valid price is required";
+  }
 
-  if (p.Price === "" || Number(p.Price) <= 0)
-    errors.Price = "Price must be greater than 0";
-
-  if (p.Stock === "" || Number(p.Stock) < 0)
-    errors.Stock = "Stock must be 0 or more";
+  if (!values.categoryId) {
+    errors.categoryId = "Category is required";
+  }
 
   return errors;
 };

@@ -1,0 +1,131 @@
+/* =========================
+   ABOUT PAGE LAYOUT
+========================= */
+
+.about-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+  background-color: #0f172a; /* match app theme */
+}
+
+/* Main container */
+.about-card {
+  max-width: 900px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.about-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.about-intro {
+  text-align: center;
+  font-size: 16px;
+  color: #475569;
+  margin-bottom: 35px;
+  line-height: 1.6;
+}
+
+/* Divider */
+.about-divider {
+  border-top: 1px solid #e5e7eb;
+  margin: 32px 0;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+/* Section text */
+.about-text {
+  font-size: 15px;
+  color: #334155;
+  line-height: 1.7;
+}
+
+/* =========================
+   LISTS
+========================= */
+
+.about-list {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.about-list li {
+  font-size: 15px;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+/* =========================
+   TECHNOLOGY GRID
+========================= */
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.tech-item {
+  background: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1e293b;
+  border: 1px solid #e5e7eb;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.about-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 40px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+  .about-card {
+    padding: 28px 22px;
+  }
+
+  .about-title {
+    font-size: 24px;
+  }
+}

@@ -1,18 +1,21 @@
-import axios from "axios";
-import {API_BASE_URL} from "../config";
+import axiosInstance from "./axiosInstance";
 
-const api=axios.create({
-  baseURL:API_BASE_URL,
-});
+export const getProducts = async () => {
+  const response = await axiosInstance.get("/products");
+  return response.data;
+};
 
-export const getProducts=()=>
-  api.get("/products").then(res => res.data);
+export const createProduct = async (data) => {
+  const response = await axiosInstance.post("/products", data);
+  return response.data;
+};
 
-export const addProduct=(product)=>
-  api.post("/products", product);
+export const updateProduct = async (id, data) => {
+  const response = await axiosInstance.put(`/products/${id}`, data);
+  return response.data;
+};
 
-export const updateProduct = (id, product) =>
-  api.put(`/products/${id}`, product);
-
-export const deleteProduct = (id) =>
-  api.delete(`/products/${id}`);
+export const deleteProduct = async (id) => {
+  const response = await axiosInstance.delete(`/products/${id}`);
+  return response.data;
+};

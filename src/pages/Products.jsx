@@ -1,13 +1,15 @@
-import AddProduct from "../components/product/AddProduct";
-import ProductList from "../components/product/ProductList";
+import Navbar from "../components/common/Navbar";
+import ProductList from "../components/products/ProductList";
+import Footer from "../components/common/Footer";
 
-export default function Products() {
+const Products = () => {
   return (
     <>
-      <h2>Products</h2>
-      <AddProduct onSuccess={() => window.location.reload()} />
-      <hr />
-      <ProductList />
+      <div style={{ padding: 20 }}>
+        <ProductList />
+      </div>
     </>
   );
-}
+};
+
+export default Products;

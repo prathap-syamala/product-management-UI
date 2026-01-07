@@ -1,0 +1,483 @@
+/* =========================
+   GLOBAL APP STYLES
+========================= */
+
+/* App background */
+body {
+  background-color: #0F172A;
+  height: 100%;
+  margin: 0;
+  
+}
+
+/* Prevent content touching navbar */
+.container {
+  padding-bottom: 12px 10px;
+  color: var(--navy);
+}
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   CARDS & SECTIONS
+========================= */
+
+/* Spacing between cards */
+.card {
+  margin-bottom: 20px;
+  box-shadow: 5px 7px 13px 8px rgba(32, 30, 30, 0.823);
+  color: #07132f;
+}
+
+/* =========================
+   FORM PAGE LAYOUT
+========================= */
+
+.form-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* =========================
+   FORM CARD
+========================= */
+
+.form-card {
+  width: 100%;              /* 👈 70% width */
+  max-width: 900px;        /* prevents too wide on big screens */
+  background-color: #ffffff;
+  border-radius: 12px;     /* curved card */
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Padding inside form */
+.form-card .card-body {
+  padding: 30px 36px;
+}
+
+/* =========================
+   INPUTS & SELECTS
+========================= */
+
+.form-card .form-control,
+.form-card .form-select {
+  border-radius: 10px;     /* 👈 curved inputs */
+  padding: 10px 14px;
+  font-size: 15px;
+  color: var(--navy);
+}
+
+/* Focus effect */
+.form-card .form-control:focus,
+.form-card .form-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.15rem rgba(37, 99, 235, 0.25);
+  color: #07132f;
+}
+
+/* Labels spacing */
+.form-card .form-label {
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+/* Buttons spacing */
+.form-card .btn {
+  min-width: 120px;
+  border-radius: 8px;
+}
+
+
+
+
+/* =========================
+   TABLE IMPROVEMENTS
+========================= */
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+td{
+  color: #07132f;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+/* =========================
+   FOOTER STYLES
+========================= */
+
+.app-footer {
+  background-color: #020617;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+/* Info section */
+.footer-info {
+  padding: 30px 0;
+  border-top: 1px solid #1e293b;
+}
+
+.footer-title {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.footer-text {
+  margin-bottom: 6px;
+  color: #94a3b8;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  background-color: #020617;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+
+.app-content {
+  min-height: calc(100vh - 120px); /* navbar + footer */
+  background-color: #0F172A;
+  flex: 1;
+  padding: 24px;
+}
+
+/* Slightly larger screens get more space */
+@media (min-width: 992px) {
+  .app-content {
+    padding: 15px 20px;
+  }
+}
+
+.app-navbar {
+  color: #FFFFFF;
+  box-shadow:2px 3px 7px 4px #64748B;
+}
+
+
+/* Placeholder text */
+.form-card input::placeholder,
+.form-card textarea::placeholder {
+  color:var(--navy);
+  opacity: 1;
+}
+
+/* Login Page Layout */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0F172A, #182849);
+}
+
+/* Login Card */
+.login-card {
+  width: 360px;
+  border-radius: 12px;
+  border: none;
+}
+
+/* Inputs */
+.login-card .form-control {
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Button */
+.login-card .btn {
+  border-radius: 8px;
+}
+
+/* Placeholder color */
+.form-control::placeholder {
+  color: var(--navy);
+  opacity: 0.7; /* softer look */
+}
+
+/* For Safari */
+.form-control::-webkit-input-placeholder {
+  color: var(--navy);
+  opacity: 0.7;
+}
+
+/* For Firefox */
+.form-control::-moz-placeholder {
+  color: var(--navy);
+  opacity: 0.7;
+}
+
+.text-navy {
+  color: var(--navy);
+}
+
+:root{
+  --navy:#0f172a;
+}
+
+.login-card {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* =========================
+   LOGIN BACKGROUND ANIMATION
+========================= */
+
+.login-bg-animation {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* COMMON */
+.login-bg-animation span {
+  position: absolute;
+  bottom: -150px;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+}
+
+/* ---------- FLOATING BOXES ---------- */
+.login-bg-animation .box {
+  width: 60px;
+  height: 60px;
+  background: #065567;
+  border-radius: 14px;
+  animation-name: floatBox;
+  filter: blur(0.3px);
+}
+
+/* ---------- FLOATING CIRCLES ---------- */
+.login-bg-animation .circle {
+  width: 90px;
+  height: 90px;
+  background: #123381;
+  border-radius: 50%;
+  animation-name: floatCircle;
+  filter: blur(2px);
+}
+
+/* ---------- INDIVIDUAL POSITIONS ---------- */
+
+/* Boxes */
+.login-bg-animation span:nth-child(1) { left: 8%;  animation-duration: 18s; }
+.login-bg-animation span:nth-child(2) { left: 22%; animation-duration: 22s; width: 80px; height: 80px; }
+.login-bg-animation span:nth-child(3) { left: 45%; animation-duration: 20s; }
+.login-bg-animation span:nth-child(4) { left: 68%; animation-duration: 26s; width: 100px; height: 100px; }
+.login-bg-animation span:nth-child(5) { left: 85%; animation-duration: 16s; width: 40px; height: 40px; }
+
+/* Circles */
+.login-bg-animation span:nth-child(6) { left: 15%; animation-duration: 30s; }
+.login-bg-animation span:nth-child(7) { left: 55%; animation-duration: 34s; width: 120px; height: 120px; }
+.login-bg-animation span:nth-child(8) { left: 78%; animation-duration: 28s; }
+
+/* ---------- ANIMATIONS ---------- */
+
+@keyframes floatBox {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatCircle {
+  0% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Keep login card above animation */
+.login-card {
+  position: relative;
+  z-index: 2;
+  color: var(--navy);
+}
+
+
+
+
+
+
+/* =========================
+   LOGIN BUBBLE ANIMATION
+========================= */
+
+.login-bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Bubble base style */
+.login-bubbles span {
+  position: absolute;
+  bottom: -120px;
+  border-radius: 50%;
+
+  /* Bubble gradient */
+  background: linear-gradient(
+    135deg,
+    rgba(15, 195, 183, 0.55),
+    rgba(17, 29, 202, 0.45),
+    rgba(13, 130, 193, 0.45)
+  );
+
+  box-shadow:
+    inset -4px -4px 8px rgba(255, 255, 255, 0.45),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.08);
+
+  filter: blur(0.4px);
+  opacity: 0;
+  animation: bubbleFloat 18s ease-in-out infinite;
+}
+
+/* ---------- POSITIONS (CORNERS + CENTER) ---------- */
+
+/* Left corner */
+.login-bubbles span:nth-child(1) {
+  left: 4%;
+  width: 84px;
+  height: 84px;
+  animation-duration: 16s;
+}
+
+.login-bubbles span:nth-child(2) {
+  left: 15%;
+  width: 44px;
+  height: 44px;
+  animation-duration: 10s;
+}
+
+/* Left-center */
+.login-bubbles span:nth-child(3) {
+  left: 29%;
+  width: 68px;
+  height: 38px;
+  animation-duration: 15s;
+}
+
+/* Center */
+.login-bubbles span:nth-child(4) {
+  left: 40%;
+  width: 72px;
+  height: 72px;
+  animation-duration: 19s;
+}
+
+/* Right-center */
+.login-bubbles span:nth-child(5) {
+  left: 51%;
+  width: 40px;
+  height: 40px;
+  animation-duration: 7s;
+}
+
+/* Right */
+.login-bubbles span:nth-child(6) {
+  left: 62%;
+  width: 48px;
+  height: 48px;
+  animation-duration: 13s;
+}
+
+/* Right corner */
+.login-bubbles span:nth-child(7) {
+  left: 73%;
+  width: 34px;
+  height: 34px;
+  animation-duration: 5s;
+}
+
+.login-bubbles span:nth-child(8) {
+  left: 84%;
+  width: 62px;
+  height: 62px;
+  animation-duration: 19s;
+}
+
+.login-bubbles span:nth-child(8) {
+  left: 95%;
+  width: 62px;
+  height: 62px;
+  animation-duration: 19s;
+}
+
+/* ---------- ANIMATION ---------- */
+
+@keyframes bubbleFloat {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.9);
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(-50vh) translateX(10px) scale(1);
+  }
+
+  100% {
+    transform: translateY(-120vh) translateX(-10px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5 {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.card p,
+.card span,
+.card small,
+.card label {
+  color: var(--navy);
+}
+
+
+
+
