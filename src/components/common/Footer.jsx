@@ -1,20 +1,5 @@
-import { useEffect, useState } from "react";
-import { getFranchises } from "../../api/franchiseApi";
-
 const Footer = () => {
-  const [franchises, setFranchises] = useState([]);
-
-  useEffect(() => {
-    const loadFranchises = async () => {
-      try {
-        const data = await getFranchises();
-        setFranchises(data);
-      } catch (err) {
-        console.error("Failed to load franchises");
-      }
-    };
-    loadFranchises();
-  }, []);
+  
 
   return (
     <footer className="app-footer">
@@ -47,17 +32,15 @@ const Footer = () => {
             </div>
 
             
-            <div className="col-md-3">
-              <h6 className="footer-title">Branches</h6>
-              {franchises.length === 0 && (
-                <p className="footer-text">No branches available</p>
-              )}
-              {franchises.map(f => (
-                <p key={f.id} className="footer-text">
-                  {f.location}
-                </p>
-              ))}
-            </div>
+                      <div className="col-md-3">
+                          <h6 className="footer-title">Branches</h6>
+                          <p className="footer-text">Hyderabad</p>
+                          <p className="footer-text">Banglore</p>
+                          <p className="footer-text">Chennai</p>
+                          <p className="footer-text">Kolkata</p>
+                          <p className="footer-text">Mumbai</p>
+                          <p className="footer-text">Kochi</p>
+                      </div>
 
           </div>
         </div>

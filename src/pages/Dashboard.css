@@ -194,3 +194,15 @@
   color: #64748b;
   line-height: 1.5;
 }
+
+.old-price {
+    text-decoration: line-through;
+    color: #0d0202;
+    margin-right: 10px;
+}
+
+.new-price {
+    color: #0d47a1;
+    font-weight: bold;
+    font-size: 18px;
+}
