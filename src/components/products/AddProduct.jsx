@@ -1,37 +1,87 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createProduct } from "../../api/productApi";
+import { addProduct } from "../../api/productApi";
 import { getCategories } from "../../api/categoryApi";
+import { validateProduct } from "../../validations/productValidation";
+import ProductForm from "./ProductForm";
+import { toast } from "react-toastify";
+import { ROUTES } from "../../constants/routes";
 
-const AddProduct = () => {
-  const [form, setForm] = useState({
+export default function AddProduct({ onSuccess }) {
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState({
+    productCode: "",
     name: "",
+    manufacturer: "",
+    description: "",
+    imageUrl: "",
     price: "",
     categoryId: ""
   });
 
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
 
+  // ✅ Load categories
   useEffect(() => {
     const loadCategories = async () => {
-      const data = await getCategories();
-      setCategories(data);
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch {
+        toast.error("Failed to load categories");
+      }
     };
+
     loadCategories();
   }, []);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const submit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await createProduct({
-      ...form,
-      categoryId: Number(form.categoryId)
-    });
-    navigate("/products");
+
+    const validationErrors = validateProduct(product);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      await addProduct({
+        name: product.name,
+        productCode: product.productCode,
+        manufacturer: product.manufacturer,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: Number(product.price),
+        categoryId: Number(product.categoryId)
+      });
+
+      toast.success("Product added successfully");
+      onSuccess?.();
+      navigate(ROUTES.PRODUCTS);
+    } catch (error) {
+      const apiErrors = error.response?.data?.errors;
+
+      if (apiErrors) {
+        const formattedErrors = {};
+        Object.keys(apiErrors).forEach((key) => {
+          const camelKey =
+            key.charAt(0).toLowerCase() + key.slice(1);
+          formattedErrors[camelKey] = apiErrors[key][0];
+        });
+        setErrors(formattedErrors);
+      } else {
+        toast.error("Failed to add product");
+      }
+    }
   };
 
   return (
@@ -40,60 +90,27 @@ const AddProduct = () => {
         <div className="card-body">
           <h4 className="text-center mb-4">Add Product</h4>
 
-          <form onSubmit={submit}>
-            <input
-              placeholder="Product Name"
-              className="form-control mb-3 text-color"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
+          <ProductForm
+            product={product}
+            categories={categories}   
+            errors={errors}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            buttonText="Add Product"
+          />
 
-            <input
-              placeholder="Price"
-              type="number"
-              className="form-control mb-3 text-color"
-              name="price"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
-
-            <select
-              className="form-select mb-3 text-color"
-              name="categoryId"
-              value={form.categoryId}
-              onChange={handleChange}
-              required
+          <div className="d-flex justify-content-between mt-4">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => navigate(ROUTES.PRODUCTS)}
             >
-              <option value="">Select Category</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-
-            <div className="d-flex justify-content-between mt-4">
-              <button
-                type="button"
-                className="btn btn-secondary text-color"
-                onClick={() => navigate("/products")}
-              >
-                Back
-              </button>
-
-              <button type="submit" className="btn btn-primary text-color">
-                Add Product
-              </button>
-            </div>
-          </form>
+              Back
+            </button>
+          </div>
 
         </div>
       </div>
     </div>
   );
-};
-
-export default AddProduct;
+}

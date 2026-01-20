@@ -1,120 +1,172 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getProducts, updateProduct } from "../../api/productApi";
+import { updateProduct } from "../../api/productApi";
 import { getCategories } from "../../api/categoryApi";
-import { ROUTES } from "../../constants/routes";
 
-const EditProduct = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
+const EditProduct = ({ productData, onSuccess, onCancel }) => {
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
+    productCode: "",
     name: "",
+    manufacturer: "",
+    description: "",
+    imageUrl: "",
     price: "",
     categoryId: ""
   });
 
   useEffect(() => {
-    const loadData = async () => {
-      const categoriesData = await getCategories();
-      setCategories(categoriesData);
-
-      const products = await getProducts();
-      const product = products.find(p => p.id === Number(id));
-
-      if (!product) {
-        alert("Product not found");
-        navigate(ROUTES.PRODUCTS);
-        return;
+    const loadCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+        setCategories([]);
       }
-
-      setForm({
-        name: product.name,
-        price: product.price,
-        categoryId: String(product.categoryId)
-      });
     };
 
-    loadData();
-  }, [id, navigate]);
+    loadCategories();
+  }, []);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    if (!productData) return;
+
+    setForm({
+      productCode: productData.productCode ?? "",
+      name: productData.name ?? "",
+      manufacturer: productData.manufacturer ?? "",
+      description: productData.description ?? "",
+      imageUrl: productData.imageUrl ?? "",
+      price: productData.price ?? "",
+      categoryId: productData.categoryId
+        ? String(productData.categoryId)
+        : ""
+    });
+  }, [productData]);
+
+
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const submit = async (e) => {
     e.preventDefault();
 
-    await updateProduct(id, {
-      ...form,
+    await updateProduct(productData.id, {
+      productCode: form.productCode.trim(),
+      name: form.name.trim(),
+      manufacturer: form.manufacturer.trim(),
+      description: form.description.trim(),
+      imageUrl: form.imageUrl.trim(),
+      price: Number(form.price),
       categoryId: Number(form.categoryId)
     });
 
-    alert("Product updated successfully");
-    navigate(ROUTES.PRODUCTS);
+    onSuccess();
   };
 
   return (
-    <div className="form-page">
-      <div className="card form-card">
-        <div className="card-body">
-          <h4 className="text-center mb-4">Edit Product</h4>
+    <div className="card mb-3">
+      <div className="card-body">
+        <h5 className="mb-3">Edit Product</h5>
 
-          <form onSubmit={submit}>
-            <input
-              placeholder="Product Name"
-              className="form-control mb-3 text-color"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
+        <form onSubmit={submit}>
 
-            <input
-              placeholder="Price"
-              type="number"
-              className="form-control mb-3 text-color"
-              name="price"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
+          {/* Product Code */}
+          <input
+            name="productCode"
+            className="form-control mb-2"
+            placeholder="Product Code"
+            value={form.productCode}
+            onChange={handleChange}
+            required
+          />
 
-            <select
-              className="form-select mb-3 text-color"
-              name="categoryId"
-              value={form.categoryId}
-              onChange={handleChange}
-              required
+          {/* Product Name */}
+          <input
+            name="name"
+            className="form-control mb-2"
+            placeholder="Product Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+
+          {/* Manufacturer */}
+          <input
+            name="manufacturer"
+            className="form-control mb-2"
+            placeholder="Manufacturer"
+            value={form.manufacturer}
+            onChange={handleChange}
+            required
+          />
+
+          {/* Description */}
+          <textarea
+            name="description"
+            className="form-control mb-2"
+            placeholder="Description"
+            rows="3"
+            value={form.description}
+            onChange={handleChange}
+          />
+
+          {/* Image URL */}
+          <input
+            name="imageUrl"
+            className="form-control mb-2"
+            placeholder="Image URL"
+            value={form.imageUrl}
+            onChange={handleChange}
+          />
+
+          {/* Price */}
+          <input
+            name="price"
+            type="number"
+            className="form-control mb-2"
+            placeholder="Price"
+            value={form.price}
+            onChange={handleChange}
+            required
+          />
+
+          {/* Category */}
+          <select
+            name="categoryId"
+            className="form-select mb-3"
+            value={form.categoryId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Actions */}
+          <div className="d-flex gap-2">
+            <button type="submit" className="btn btn-primary btn-sm">
+              Update
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={onCancel}
             >
-              <option value="">Select Category</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              Cancel
+            </button>
+          </div>
 
-            <div className="d-flex justify-content-between mt-4">
-              <button
-                type="button"
-                className="btn btn-secondary text-color"
-                onClick={() => navigate(ROUTES.PRODUCTS)}
-              >
-                Back
-              </button>
-
-              <button type="submit" className="btn btn-primary text-color">
-                Update Product
-              </button>
-            </div>
-          </form>
-
-        </div>
+        </form>
       </div>
     </div>
   );
+
 };
 
 export default EditProduct;

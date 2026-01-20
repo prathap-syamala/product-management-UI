@@ -26,7 +26,7 @@ const Dashboard = () => {
 
         // Load products for ALL roles
         getProducts()
-            .then(data => setProducts(data.slice(0, 6))) // show max 6
+            .then(data => setProducts(data.slice(0, 60))) // show max 6
             .catch(() => console.error("Product load failed"));
     }, [role]);
 
@@ -74,6 +74,17 @@ const Dashboard = () => {
                 <div className="dashboard-product-list">
                     {products.map(p => (
                         <div key={p.id} className="dashboard-product-card">
+
+                            {/* Product Image */}
+                            <img
+                                src={p.imageUrl || "/no-image.png"}
+                                alt={p.name}
+                                className="dashboard-product-image"
+                                onError={(e) => {
+                                    e.target.src = "/no-image.png";
+                                }}
+                            />
+
                             <h4>{p.name}</h4>
 
                             <p className="price">
