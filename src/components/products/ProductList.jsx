@@ -48,6 +48,7 @@ const ProductList = () => {
         <table className="table table-striped">
           <thead className="table-dark">
             <tr>
+              <th>Id</th>
               <th>Code</th>
               <th>Name</th>
               <th>Manufacturer</th>
@@ -59,7 +60,7 @@ const ProductList = () => {
           <tbody>
             {products.length === 0 && (
               <tr>
-                <td colSpan="5" className="text-center">
+                <td colSpan="6" className="text-center">
                   No products found
                 </td>
               </tr>
@@ -67,6 +68,7 @@ const ProductList = () => {
 
             {products.map((p) => (
               <tr key={p.id}>
+                <td>{p.id}</td>
                 <td>{p.productCode}</td>
                 <td>{p.name}</td>
                 <td>{p.manufacturer}</td>

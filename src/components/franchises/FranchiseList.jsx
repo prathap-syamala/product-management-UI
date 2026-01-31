@@ -47,12 +47,29 @@ const FranchiseList = () => {
                 <td>{f.phone}</td>
                 <td>
                   <Link
-                    // to={`/products/edit/${p.id}`}y
-                    className="btn btn-sm btn-warning me-2"
+                    to={`/franchises/edit/${f.id}`}
+                    className="btn btn-sm btn-warning"
                   >
                     Edit
                   </Link>
+
+                  <button
+                    className="btn btn-sm btn-danger"
+                    disabled={f.userCount > 0}
+                    onClick={async () => {
+                      if (!window.confirm("Delete this franchise?")) return;
+                      try {
+                        await deleteFranchise(f.id);
+                        setFranchises(prev => prev.filter(x => x.id !== f.id));
+                      } catch (err) {
+                        alert(err.response?.data?.error);
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
+
               </tr>
             ))}
           </tbody>

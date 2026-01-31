@@ -11,6 +11,7 @@ import NotFound from "../pages/NotFound";
 import EditProduct from "../components/products/EditProduct";
 import AddProduct from "../components/products/AddProduct";
 import CategoryList from "../components/categories/CategoryList";
+import EditCategory from "../components/users/EditCategory";
 import AddCategory from "../components/categories/AddCategory";
 import UserList from "../components/users/UserList";
 import FranchiseList from "../components/franchises/FranchiseList";
@@ -21,6 +22,7 @@ import { ROUTES } from "../constants/routes";
 import { ROLES } from "../constants/roles";
 import MainLayout from "../Layouts/MainLayouts";
 import About from "../pages/AboutPage";
+import EditFranchise from "../components/franchises/EditFranchise";
 
 const AppRoutes = () => {
   return (
@@ -35,14 +37,16 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
+
+        <Route path={ROUTES.EDIT_CATEGORY} element={<EditCategory/>}/>
         <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
         <Route path={ROUTES.PRODUCTS} element={<Products />} />
         <Route path={ROUTES.CATEGORIES} element={<CategoryList />} />
         <Route path={ROUTES.USERS} element={<UserList />} />
         <Route path={ROUTES.FRANCHISES} element={<FranchiseList />} />
         <Route path={ROUTES.INVENTORY} element={<Inventory />} />
-        <Route path={ROUTES.ABOUT} element={<About/>}/>
-
+        <Route path={ROUTES.ABOUT} element={<About />} />
+        <Route path={ROUTES.EDIT_FRANCHISES} element={<EditFranchise/>}/>
         <Route
           path={ROUTES.ADD_PRODUCT}
           element={
@@ -89,8 +93,8 @@ const AppRoutes = () => {
         />
       </Route>
 
-      {/* Fallback */ }
-  <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+      {/* Fallback */}
+      <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
     </Routes >
   );
 };
