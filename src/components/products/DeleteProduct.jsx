@@ -1,12 +1,31 @@
 import { deleteProduct } from "../../api/productApi";
-
+import { toast } from "react-toastify";
 const DeleteProduct = ({ id, onSuccess }) => {
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
 
-    await deleteProduct(id);
-    onSuccess();
+    if (!confirmDelete) return;
+
+    try {
+      await deleteProduct(id);
+
+      // if parent list needs refresh / removal
+      onSuccess();
+
+      // ✅ success toast
+      toast.success("Product deleted successfully 🗑️", {
+        toastId: "product-delete",
+      });
+
+    } catch (error) {
+      // ❌ error toast
+      toast.error(
+        error?.response?.data?.error ||
+        "Failed to delete product ❌"
+      );
+    }
   };
 
   return (

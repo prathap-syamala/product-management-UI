@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { ROUTES } from "../../constants/routes";
+import { toast } from "react-toastify";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -20,12 +21,20 @@ const EditCategory = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-
-    await axiosInstance.put(`/categories/${id}`, {
+    try{
+      await axiosInstance.put(`/categories/${id}`, {
       name
     });
+    toast.success("successfully Updated Category ✅");
 
-    navigate(ROUTES.CATEGORIES);
+    setTimeout(()=>{
+       navigate(ROUTES.CATEGORIES);
+    },500);
+    }
+    catch(ex){
+      console.error(ex);
+      toast.error("Failed to update category ❌");
+    }
   };
 
   return (

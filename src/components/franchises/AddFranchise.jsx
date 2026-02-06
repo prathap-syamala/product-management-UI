@@ -39,8 +39,14 @@ const AddFranchise = () => {
         phone: form.phone
       });
 
+      sessionStorage.setItem(
+        "toastMessage",
+        "Franchise added successfully ✅"
+      );
+
       navigate(ROUTES.FRANCHISES);
     } catch (err) {
+      toast.error("Failed to add franchise ❌");
       // Backend validation errors
       if (err.response?.data?.error) {
         setError(err.response.data.error);

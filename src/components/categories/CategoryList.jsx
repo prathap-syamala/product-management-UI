@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 import { getCategories } from "../../api/categoryApi";
 import axiosInstance from "../../api/axiosInstance";
 import { ROUTES } from "../../constants/routes";
+import {  toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const role = localStorage.getItem("role");
+
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -14,6 +18,18 @@ const CategoryList = () => {
       setCategories(data);
     };
     loadCategories();
+  }, []);
+
+  useEffect(() => {
+    const message = sessionStorage.getItem("toastMessage");
+
+    if (message && !toast.isActive("category-add")) {
+      toast.success(message, {
+        toastId: "category-add",
+      });
+
+      sessionStorage.removeItem("toastMessage");
+    }
   }, []);
 
   const handleDelete = async (id) => {
@@ -29,14 +45,17 @@ const CategoryList = () => {
       setCategories(prev =>
         prev.filter(c => c.id !== id)
       );
+
+      toast.success("Category deleted successfully ✅");
+
     } catch (error) {
-      console.error(error);
-      alert(
+      toast.error(
         error?.response?.data?.error ||
         "Cannot delete category. Products may exist under this category."
       );
     }
   };
+
 
   return (
     <div className="card">
@@ -57,14 +76,14 @@ const CategoryList = () => {
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th style={{ width: "180px" }}>Actions</th>
+              <th style={{ width: "340px" }}>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {categories.map(c => (
+            {categories.map((c,index) => (
               <tr key={c.id}>
-                <td>{c.id}</td>
+                <td>{index+1}</td>
                 <td>{c.name}</td>
 
                 <td>
@@ -74,6 +93,12 @@ const CategoryList = () => {
                       className="btn btn-sm btn-warning"
                     >
                       Edit
+                    </Link>
+                    <Link
+                      to={`/categories/${c.id}/subcategories`}
+                      className="btn btn-sm btn-info me-2"
+                    >
+                      View Sub-Cat
                     </Link>
 
                     {role === "Admin" && (
@@ -98,6 +123,7 @@ const CategoryList = () => {
           </tbody>
 
         </table>
+
       </div>
     </div>
   );

@@ -93,8 +93,7 @@ const Dashboard = () => {
                             </p>
 
                             <p className="product-desc">
-                                {p.name} is one of our featured products designed to support
-                                efficient inventory tracking and sales operations.
+                                {p.description}
                             </p>
                         </div>
                     ))}

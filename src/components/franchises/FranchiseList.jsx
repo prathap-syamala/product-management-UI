@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getFranchises } from "../../api/franchiseApi";
+import { deleteFranchise, getFranchises } from "../../api/franchiseApi";
 import { ROUTES } from "../../constants/routes";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FranchiseList = () => {
   const [franchises, setFranchises] = useState([]);
@@ -13,6 +15,18 @@ const FranchiseList = () => {
     };
     loadFranchises();
   }, []);
+  useEffect(() => {
+    const message = sessionStorage.getItem("toastMessage");
+
+    if (message && !toast.isActive("franchise-add")) {
+      toast.success(message, {
+        toastId: "franchise-add",
+      });
+
+      sessionStorage.removeItem("toastMessage");
+    }
+  }, []);
+
 
   return (
     <div className="card">
@@ -37,9 +51,9 @@ const FranchiseList = () => {
             </tr>
           </thead>
           <tbody>
-            {franchises.map((f) => (
+            {franchises.map((f,index) => (
               <tr key={f.id}>
-                <td>{f.id}</td>
+                <td>{index+1}</td>
                 <td>{f.franchiseName}</td>
                 <td>{f.location}</td>
                 <td>{f.totalStaff}</td>
@@ -58,11 +72,24 @@ const FranchiseList = () => {
                     disabled={f.userCount > 0}
                     onClick={async () => {
                       if (!window.confirm("Delete this franchise?")) return;
+
                       try {
                         await deleteFranchise(f.id);
-                        setFranchises(prev => prev.filter(x => x.id !== f.id));
+
+                        setFranchises(prev =>
+                          prev.filter(x => x.id !== f.id)
+                        );
+
+                        // ✅ success toast
+                        toast.success("Franchise deleted successfully 🗑️", {
+                          toastId: "franchise-delete",
+                        });
+
                       } catch (err) {
-                        alert(err.response?.data?.error);
+                        // ❌ error toast
+                        toast.error(
+                          err.response?.data?.error || "Failed to delete franchise ❌"
+                        );
                       }
                     }}
                   >

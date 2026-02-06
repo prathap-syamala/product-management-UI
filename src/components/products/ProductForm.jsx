@@ -1,79 +1,143 @@
-function ProductForm({
+const ProductForm = ({
   product,
   categories = [],
-  errors,
+  subCategories = [],
+  errors = {},
   onChange,
   onSubmit,
-  buttonText
-}) {
-  const fields = [
-    { name: "productCode", label: "Product Code", type: "text" },
-    { name: "name", label: "Product Name", type: "text" },
-    { name: "manufacturer", label: "Manufacturer", type: "text" },
-    { name: "description", label: "Description", type: "textarea" },
-    { name: "imageUrl", label: "Image URL", type: "text" },
-    { name: "price", label: "Price", type: "number" }
-  ];
-
+  onBack,
+  submitText
+}) => {
   return (
     <form onSubmit={onSubmit}>
-      {/* Standard Fields */}
-      {fields.map(({ name, label, type }) => (
-        <div className="mb-3" key={name}>
-          <label className="form-label">{label}</label>
 
-          {type === "textarea" ? (
-            <textarea
-              className="form-control"
-              name={name}
-              value={product[name] || ""}
-              onChange={onChange}
-            />
-          ) : (
-            <input
-              type={type}
-              className="form-control"
-              name={name}
-              value={product[name] || ""}
-              onChange={onChange}
-            />
-          )}
+      {/* PRODUCT CODE */}
+      <input
+        className="form-control mb-3"
+        placeholder="Product Code"
+        name="productCode"
+        value={product.productCode}
+        onChange={onChange}
+        required
+      />
+      {errors.productCode && (
+        <div className="text-danger mb-2">{errors.productCode}</div>
+      )}
 
-          {errors?.[name] && (
-            <div className="text-danger">{errors[name]}</div>
-          )}
-        </div>
-      ))}
+      {/* CATEGORY */}
+      <select
+        className={`form-select mb-3 ${
+          product.categoryId === "" ? "text-muted" : "text-dark"
+        }`}
+        name="categoryId"
+        value={product.categoryId}
+        onChange={onChange}
+        required
+      >
+        <option value="">Select Category</option>
+        {categories.map(c => (
+          <option key={c.id} value={c.id}>
+            {c.name}
+          </option>
+        ))}
+      </select>
+      {errors.categoryId && (
+        <div className="text-danger mb-2">{errors.categoryId}</div>
+      )}
 
-      {/* Category Dropdown */}
-      <div className="mb-3">
-        <label className="form-label">Category</label>
+      {/* SUBCATEGORY */}
+      <select
+        className={`form-select mb-3 ${
+          product.subCategoryId === "" ? "text-muted" : "text-dark"
+        }`}
+        name="subCategoryId"
+        value={product.subCategoryId}
+        onChange={onChange}
+        disabled={!product.categoryId}
+        required
+      >
+        <option value="">Select Sub-Category</option>
+        {subCategories.map(sc => (
+          <option key={sc.id} value={sc.id}>
+            {sc.name}
+          </option>
+        ))}
+      </select>
+      {errors.subCategoryId && (
+        <div className="text-danger mb-2">{errors.subCategoryId}</div>
+      )}
 
-        <select
-          className="form-control"
-          name="categoryId"
-          value={product.categoryId || ""}
-          onChange={onChange}
+      {/* PRODUCT NAME */}
+      <input
+        className="form-control mb-3"
+        placeholder="Product Name"
+        name="name"
+        value={product.name}
+        onChange={onChange}
+        required
+      />
+      {errors.name && (
+        <div className="text-danger mb-2">{errors.name}</div>
+      )}
+
+      {/* MANUFACTURER */}
+      <input
+        className="form-control mb-3"
+        placeholder="Manufacturer"
+        name="manufacturer"
+        value={product.manufacturer}
+        onChange={onChange}
+      />
+
+      {/* DESCRIPTION */}
+      <textarea
+        className="form-control mb-3"
+        placeholder="Description"
+        name="description"
+        value={product.description}
+        onChange={onChange}
+      />
+
+      {/* IMAGE URL */}
+      <input
+        className="form-control mb-3"
+        placeholder="Image URL"
+        name="imageUrl"
+        value={product.imageUrl}
+        onChange={onChange}
+      />
+
+      {/* PRICE */}
+      <input
+        type="number"
+        className="form-control mb-3"
+        placeholder="Price"
+        name="price"
+        value={product.price}
+        onChange={onChange}
+        required
+      />
+      {errors.price && (
+        <div className="text-danger mb-2">{errors.price}</div>
+      )}
+
+      {/* ACTION BUTTONS */}
+      <div className="d-flex justify-content-between mt-4">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onBack}
         >
-          <option value="">-- Select Category --</option>
+          Back
+        </button>
 
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-
-        {errors?.categoryId && (
-          <div className="text-danger">{errors.categoryId}</div>
-        )}
+        <button type="submit" className="btn btn-primary">
+          {submitText}
+        </button>
       </div>
 
-      <button type="submit" className="btn btn-primary">
-        {buttonText}
-      </button>
     </form>
   );
-}
+};
 
 export default ProductForm;

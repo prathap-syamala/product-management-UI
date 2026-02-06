@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getFranchiseById, updateFranchise } from "../../api/franchiseApi";
 import { ROUTES } from "../../constants/routes";
+import { toast } from "react-toastify";
 
 const EditFranchise = () => {
   const { id } = useParams();
@@ -44,16 +45,21 @@ const EditFranchise = () => {
   // ✅ SUBMIT
   const submit = async (e) => {
     e.preventDefault();
-
-    await updateFranchise(id, {
+    try{
+      await updateFranchise(id, {
       franchiseName: form.franchiseName.trim(),
       location: form.location.trim(),
       totalStaff: Number(form.totalStaff), // convert back
       email: form.email.trim(),
       phone: form.phone.trim()
     });
-
-    navigate(ROUTES.FRANCHISES);
+navigate(ROUTES.FRANCHISES);
+toast.success("Franchise Updated Successfully ✅");
+    }
+    catch(ex){
+      console.error("Error occur", ex);
+      toast.error("Failed to update Franchise ❌")
+    }
   };
 
   return (

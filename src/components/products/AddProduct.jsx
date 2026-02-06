@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../api/productApi";
 import { getCategories } from "../../api/categoryApi";
+import { getSubCategoriesByCategory } from "../../api/SubCategoryApi";
 import { validateProduct } from "../../validations/productValidation";
 import ProductForm from "./ProductForm";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../constants/routes";
 
-export default function AddProduct({ onSuccess }) {
+const AddProduct = () => {
   const navigate = useNavigate();
+
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const [product, setProduct] = useState({
     productCode: "",
@@ -17,34 +22,41 @@ export default function AddProduct({ onSuccess }) {
     description: "",
     imageUrl: "",
     price: "",
-    categoryId: ""
+    categoryId: "",
+    subCategoryId: "", // ✅ CORRECT
   });
 
-  const [categories, setCategories] = useState([]);
-  const [errors, setErrors] = useState({});
-
-  // ✅ Load categories
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await getCategories();
-        setCategories(data);
-      } catch {
-        toast.error("Failed to load categories");
-      }
-    };
-
-    loadCategories();
+    getCategories()
+      .then(setCategories)
+      .catch(() => toast.error("Failed to load categories"));
   }, []);
 
-  const handleChange = (e) => {
-    setProduct({
-      ...product,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    setProduct((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // 🔹 When category changes → reload subcategories
+    if (name === "categoryId") {
+      setProduct((prev) => ({
+        ...prev,
+        subCategoryId: "",
+      }));
+
+      if (value) {
+        const data = await getSubCategoriesByCategory(value);
+        setSubCategories(data);
+      } else {
+        setSubCategories([]);
+      }
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
 
     const validationErrors = validateProduct(product);
@@ -55,32 +67,19 @@ export default function AddProduct({ onSuccess }) {
 
     try {
       await addProduct({
-        name: product.name,
-        productCode: product.productCode,
-        manufacturer: product.manufacturer,
-        description: product.description,
-        imageUrl: product.imageUrl,
+        ...product,
+        name: product.name.trim(),
         price: Number(product.price),
-        categoryId: Number(product.categoryId)
+        categoryId: Number(product.categoryId),
+        subCategoryId: Number(product.subCategoryId), // ✅ SENT TO BACKEND
       });
 
-      toast.success("Product added successfully");
-      onSuccess?.();
+      toast.success("Product added successfully ✅");
       navigate(ROUTES.PRODUCTS);
-    } catch (error) {
-      const apiErrors = error.response?.data?.errors;
-
-      if (apiErrors) {
-        const formattedErrors = {};
-        Object.keys(apiErrors).forEach((key) => {
-          const camelKey =
-            key.charAt(0).toLowerCase() + key.slice(1);
-          formattedErrors[camelKey] = apiErrors[key][0];
-        });
-        setErrors(formattedErrors);
-      } else {
-        toast.error("Failed to add product");
-      }
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Failed to add product"
+      );
     }
   };
 
@@ -88,29 +87,24 @@ export default function AddProduct({ onSuccess }) {
     <div className="form-page">
       <div className="card form-card">
         <div className="card-body">
-          <h4 className="text-center mb-4">Add Product</h4>
+          <h4 className="text-center mb-4 page-title">
+            Add Product
+          </h4>
 
           <ProductForm
             product={product}
-            categories={categories}   
+            categories={categories}
+            subCategories={subCategories}
             errors={errors}
             onChange={handleChange}
-            onSubmit={handleSubmit}
-            buttonText="Add Product"
+            onSubmit={submit}
+            onBack={() => navigate(ROUTES.PRODUCTS)}
+            submitText="Add Product"
           />
-
-          <div className="d-flex justify-content-between mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => navigate(ROUTES.PRODUCTS)}
-            >
-              Back
-            </button>
-          </div>
-
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AddProduct;

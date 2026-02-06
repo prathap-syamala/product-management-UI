@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
-import { updateProduct } from "../../api/productApi";
+import { useParams, useNavigate } from "react-router-dom";
+import { getProductById, updateProduct } from "../../api/productApi";
 import { getCategories } from "../../api/categoryApi";
+import { getSubCategoriesByCategory } from "../../api/SubCategoryApi";
+import { toast } from "react-toastify";
 
-const EditProduct = ({ productData, onSuccess, onCancel }) => {
+const EditProduct = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [form, setForm] = useState({
     productCode: "",
     name: "",
@@ -11,162 +20,150 @@ const EditProduct = ({ productData, onSuccess, onCancel }) => {
     description: "",
     imageUrl: "",
     price: "",
-    categoryId: ""
+    categoryId: "",
+    subCategoryId: "",
   });
 
+  /* 🔹 Load categories */
   useEffect(() => {
-    const loadCategories = async () => {
+    getCategories()
+      .then(setCategories)
+      .catch(() => toast.error("Failed to load categories"));
+  }, []);
+
+  /* 🔹 Load product + its subcategories */
+  useEffect(() => {
+    const loadProduct = async () => {
       try {
-        const data = await getCategories();
-        setCategories(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error("Failed to load categories", err);
-        setCategories([]);
+        const data = await getProductById(id);
+
+        // 1️⃣ Load subcategories for product category
+        if (data.categoryId) {
+          const subs = await getSubCategoriesByCategory(data.categoryId);
+          setSubCategories(Array.isArray(subs) ? subs : []);
+        }
+
+        // 2️⃣ Set form AFTER subcategories exist
+        setForm({
+          productCode: data.productCode ?? "",
+          name: data.name ?? "",
+          manufacturer: data.manufacturer ?? "",
+          description: data.description ?? "",
+          imageUrl: data.imageUrl ?? "",
+          price: data.price ?? "",
+          categoryId: data.categoryId?.toString() ?? "",
+          subCategoryId: data.subCategoryId?.toString() ?? "",
+        });
+
+      } catch {
+        toast.error("Failed to load product ❌");
+      } finally {
+        setLoading(false);
       }
     };
 
-    loadCategories();
-  }, []);
+    loadProduct();
+  }, [id]);
 
-  useEffect(() => {
-    if (!productData) return;
+  /* 🔹 Handle changes (reload subcategories if category changes) */
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
 
-    setForm({
-      productCode: productData.productCode ?? "",
-      name: productData.name ?? "",
-      manufacturer: productData.manufacturer ?? "",
-      description: productData.description ?? "",
-      imageUrl: productData.imageUrl ?? "",
-      price: productData.price ?? "",
-      categoryId: productData.categoryId
-        ? String(productData.categoryId)
-        : ""
-    });
-  }, [productData]);
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
+    if (name === "categoryId") {
+      setForm((prev) => ({
+        ...prev,
+        subCategoryId: "",
+      }));
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+      if (value) {
+        const subs = await getSubCategoriesByCategory(value);
+        setSubCategories(Array.isArray(subs) ? subs : []);
+      } else {
+        setSubCategories([]);
+      }
+    }
+  };
 
+  /* 🔹 Submit update */
   const submit = async (e) => {
     e.preventDefault();
 
-    await updateProduct(productData.id, {
-      productCode: form.productCode.trim(),
-      name: form.name.trim(),
-      manufacturer: form.manufacturer.trim(),
-      description: form.description.trim(),
-      imageUrl: form.imageUrl.trim(),
-      price: Number(form.price),
-      categoryId: Number(form.categoryId)
-    });
+    try {
+      await updateProduct(id, {
+        ...form,
+        price: Number(form.price),
+        categoryId: Number(form.categoryId),
+        subCategoryId: Number(form.subCategoryId),
+      });
 
-    onSuccess();
+      toast.success("Product updated successfully ✅");
+      navigate("/products");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Failed to update product ❌"
+      );
+    }
   };
 
+  if (loading) return <div className="text-center mt-3">Loading...</div>;
+
   return (
-    <div className="card mb-3">
+    <div className="card">
       <div className="card-body">
-        <h5 className="mb-3">Edit Product</h5>
+        <h5>Edit Product</h5>
 
         <form onSubmit={submit}>
+          <input name="productCode" className="form-control mb-2"
+            value={form.productCode} onChange={handleChange} required />
 
-          {/* Product Code */}
-          <input
-            name="productCode"
-            className="form-control mb-2"
-            placeholder="Product Code"
-            value={form.productCode}
-            onChange={handleChange}
-            required
-          />
+          <input name="name" className="form-control mb-2"
+            value={form.name} onChange={handleChange} required />
 
-          {/* Product Name */}
-          <input
-            name="name"
-            className="form-control mb-2"
-            placeholder="Product Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
+          <input name="manufacturer" className="form-control mb-2"
+            value={form.manufacturer} onChange={handleChange} required />
 
-          {/* Manufacturer */}
-          <input
-            name="manufacturer"
-            className="form-control mb-2"
-            placeholder="Manufacturer"
-            value={form.manufacturer}
-            onChange={handleChange}
-            required
-          />
+          <textarea name="description" className="form-control mb-2"
+            value={form.description} onChange={handleChange} />
 
-          {/* Description */}
-          <textarea
-            name="description"
-            className="form-control mb-2"
-            placeholder="Description"
-            rows="3"
-            value={form.description}
-            onChange={handleChange}
-          />
+          <input name="imageUrl" className="form-control mb-2"
+            value={form.imageUrl} onChange={handleChange} required />
 
-          {/* Image URL */}
-          <input
-            name="imageUrl"
-            className="form-control mb-2"
-            placeholder="Image URL"
-            value={form.imageUrl}
-            onChange={handleChange}
-          />
+          <input type="number" name="price" className="form-control mb-2"
+            value={form.price} onChange={handleChange} required />
 
-          {/* Price */}
-          <input
-            name="price"
-            type="number"
-            className="form-control mb-2"
-            placeholder="Price"
-            value={form.price}
-            onChange={handleChange}
-            required
-          />
-
-          {/* Category */}
-          <select
-            name="categoryId"
-            className="form-select mb-3"
-            value={form.categoryId}
-            onChange={handleChange}
-            required
-          >
+          <select name="categoryId" className="form-select mb-2"
+            value={form.categoryId} onChange={handleChange} required>
             <option value="">Select Category</option>
             {categories.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
 
-          {/* Actions */}
-          <div className="d-flex gap-2">
-            <button type="submit" className="btn btn-primary btn-sm">
-              Update
-            </button>
+          <select name="subCategoryId" className="form-select mb-3"
+            value={form.subCategoryId} onChange={handleChange} required>
+            <option value="">Select Sub-Category</option>
+            {subCategories.map(sc => (
+              <option key={sc.id} value={sc.id}>{sc.name}</option>
+            ))}
+          </select>
 
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={onCancel}
-            >
-              Cancel
-            </button>
-          </div>
-
+          <button className="btn btn-primary btn-sm">Update</button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm ms-2"
+            onClick={() => navigate("/products")}
+          >
+            Cancel
+          </button>
         </form>
       </div>
     </div>
   );
-
 };
 
 export default EditProduct;
