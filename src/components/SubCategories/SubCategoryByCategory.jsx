@@ -35,7 +35,7 @@ const SubCategoryByCategory = () => {
     try {
       await deleteSubCategory(id);
       setSubCategories((prev) => prev.filter((sc) => sc.id !== id));
-      toast.success("Sub-category deleted ✅");
+      toast.error("Sub-category deleted ❌");
     } catch {
       toast.error("Delete failed");
     }
@@ -85,11 +85,13 @@ const SubCategoryByCategory = () => {
                 <td>
                   <div className="d-flex gap-2">
                     <Link
-                      to={`/subcategories/edit/${sc.id}`}
+                      to={`/categories/${categoryId}/subcategories/edit`}
+                      state={{ subCategoryId: sc.id }}
                       className="btn btn-sm btn-warning"
                     >
                       Edit
                     </Link>
+
 
                     <button
                       className="btn btn-sm btn-danger"
@@ -107,7 +109,7 @@ const SubCategoryByCategory = () => {
         {/* BACK BUTTON */}
         <button
           className="btn btn-secondary btn-sm mt-3"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/categories")}
         >
           ← Back
         </button>

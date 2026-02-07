@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   getSubCategories,
   updateSubCategory,
@@ -8,18 +8,29 @@ import SubCategoryForm from "./SubCategoryForm";
 import { toast } from "react-toastify";
 
 const EditSubCategory = () => {
-  const { id } = useParams();
+  const { categoryId } = useParams();              // ✅ only param in URL
+  const location = useLocation();                  // ✅ get state
   const navigate = useNavigate();
+
+  const subCategoryId = location.state?.subCategoryId; // ✅ from Edit button
   const [subCategory, setSubCategory] = useState(null);
 
   useEffect(() => {
+    if (!subCategoryId) {
+      toast.error("Invalid edit navigation");
+      navigate(`/categories/${categoryId}/subcategories`, { replace: true });
+      return;
+    }
+
     const loadData = async () => {
       const list = await getSubCategories();
-      const sc = list.find((x) => x.id === Number(id));
+      const sc = list.find(
+        (x) => x.id === Number(subCategoryId)
+      );
 
       if (!sc) {
         toast.error("Sub-category not found");
-        navigate(-1);
+        navigate(`/categories/${categoryId}/subcategories`, { replace: true });
         return;
       }
 
@@ -27,19 +38,19 @@ const EditSubCategory = () => {
     };
 
     loadData();
-  }, [id, navigate]);
+  }, [subCategoryId, categoryId, navigate]);
+
 
   const handleSubmit = async (data) => {
     try {
-      await updateSubCategory(id, {
+      await updateSubCategory(subCategoryId, {
         ...data,
         name: data.name.trim(),
       });
 
       toast.success("Sub-category updated ✏️");
 
-      // ✅ go back to that category’s subcategory list
-      navigate(`/categories/${subCategory.categoryId}/subcategories`);
+      navigate(`/categories/${categoryId}/subcategories`);
     } catch (err) {
       toast.error(err.response?.data?.error || "Update failed");
     }
@@ -60,9 +71,7 @@ const EditSubCategory = () => {
             submitText="Update Sub-Category"
             onSubmit={handleSubmit}
             onBack={() =>
-              navigate(
-                `/categories/${subCategory.categoryId}/subcategories`
-              )
+              navigate(`/categories/${categoryId}/subcategories`)
             }
           />
         </div>

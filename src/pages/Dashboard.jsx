@@ -85,6 +85,7 @@ const Dashboard = () => {
                                 }}
                             />
 
+
                             <h4>{p.name}</h4>
 
                             <p className="price">
