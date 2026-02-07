@@ -7,29 +7,49 @@ import { toast } from "react-toastify";
 const UserList = () => {
   const [users, setUsers] = useState([]);
 
+  // 🔹 Load users
   useEffect(() => {
     const loadUsers = async () => {
-      const data = await getUsers();
-      setUsers(data);
+      try {
+        const data = await getUsers();
+        setUsers(data);
+      } catch {
+        toast.error("Failed to load users ❌");
+      }
     };
     loadUsers();
   }, []);
 
+  // 🔹 Show toast after navigation (Add User)
   useEffect(() => {
     const message = sessionStorage.getItem("toastMessage");
 
-    if (message && !toast.isActive("user-add")) {
-      toast.success(message, {
-        toastId: "user-add",
-      });
-
+    if (message) {
+      toast.success(message);
       sessionStorage.removeItem("toastMessage");
     }
   }, []);
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this user?")) return;
+
+    try {
+      await deleteUser(id);
+
+      setUsers(prev => prev.filter(u => u.id !== id));
+
+      toast.success("User deleted successfully 🗑️");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Failed to delete user ❌"
+      );
+    }
+  };
+
   return (
     <div className="card">
       <div className="card-body">
+
         <div className="d-flex justify-content-between mb-3">
           <h4>Users</h4>
           <Link to={ROUTES.ADD_USER} className="btn btn-primary btn-sm">
@@ -40,52 +60,41 @@ const UserList = () => {
         <table className="table table-striped table-hover">
           <thead className="table-dark">
             <tr>
-              <td>Id</td>
+              <th>#</th>
               <th>Username</th>
               <th>Role</th>
+              <th>Email</th>
               <th>Action</th>
             </tr>
           </thead>
+
           <tbody>
-            {users.map((u,index) => (
+            {users.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center text-muted">
+                  No users found
+                </td>
+              </tr>
+            )}
+
+            {users.map((u, index) => (
               <tr key={u.id}>
-                <td>{index+1}</td>
+                <td>{index + 1}</td>
                 <td>{u.username}</td>
                 <td>{u.role}</td>
-
+                <td>{u.email}</td>
                 <td>
                   <button
                     className="btn btn-sm btn-danger"
-                    onClick={async () => {
-                      if (!window.confirm("Delete this user?")) return;
-
-                      try {
-                        await deleteUser(u.id);
-
-                        // ✅ update USERS state (not franchises)
-                        setUsers(prev =>
-                          prev.filter(x => x.id !== u.id)
-                        );
-
-                        toast.success("User deleted successfully 🗑️", {
-                          toastId: "user-delete",
-                        });
-
-                      } catch (err) {
-                        toast.error(
-                          err.response?.data?.error ||
-                          "Failed to delete user ❌"
-                        );
-                      }
-                    }}
+                    onClick={() => handleDelete(u.id)}
                   >
                     Delete
                   </button>
                 </td>
-
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
     </div>

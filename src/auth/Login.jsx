@@ -5,7 +5,7 @@ import { ROUTES } from "../constants/routes";
 
 const Login = () => {
   const [form, setForm] = useState({
-    username: "",
+    email: "",
     password: ""
   });
 
@@ -25,18 +25,20 @@ const Login = () => {
 
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
+      localStorage.setItem("email", res.email);     // ✅ FIX
       localStorage.setItem("username", res.username);
 
       navigate(ROUTES.DASHBOARD);
     } catch {
-      setError("Invalid username or password");
+      setError("Invalid email or password");
     }
   };
+
 
   return (
     <div className="login-page">
       <div className="login-bubbles">
-        <span></span> 
+        <span></span>
         <span></span>
         <span></span>
         <span></span>
@@ -63,11 +65,11 @@ const Login = () => {
 
           <form onSubmit={submit}>
             <input
-              type="text"
-              name="username"
+              type="email"
+              name="email"
               className="form-control mb-3"
-              placeholder="Username"
-              value={form.username}
+              placeholder="Email"
+              value={form.email}
               onChange={handleChange}
               required
             />

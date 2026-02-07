@@ -3,96 +3,111 @@ import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/userApi";
 import { getRoles } from "../../api/roleApi";
 import { ROUTES } from "../../constants/routes";
+import { toast } from "react-toastify";
 
 const AddUser = () => {
   const navigate = useNavigate();
-
-  // ✅ 1. DEFINE roles STATE (THIS FIXES THE ERROR)
   const [roles, setRoles] = useState([]);
 
-  // ✅ 2. FORM STATE (role MUST be "")
   const [form, setForm] = useState({
     username: "",
+    email: "",
     password: "",
     roleId: ""
   });
 
-  // ✅ 3. FETCH ROLES FROM BACKEND
   useEffect(() => {
     const loadRoles = async () => {
       try {
         const data = await getRoles();
         setRoles(data);
-      } catch (err) {
-        console.error("Failed to load roles", err);
+      } catch {
+        toast.error("Failed to load roles ❌");
       }
     };
-
     loadRoles();
   }, []);
 
-  // ✅ 4. HANDLE INPUT CHANGE
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ 5. SUBMIT FORM
   const submit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  await createUser({
-    username: form.username,
-    password: form.password,
-    roleId: Number(form.roleId),  // ✅ REQUIRED
-    franchiseIds: []              // ✅ REQUIRED (even if empty)
-  });
+    try {
+      await createUser({
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        roleId: Number(form.roleId),
+        franchiseIds: []
+      });
 
-  navigate(ROUTES.USERS);
-};
+      // ✅ Store toast message for next page
+      sessionStorage.setItem("toastMessage", "User created successfully 🎉");
+
+      navigate(ROUTES.USERS);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Failed to create user ❌"
+      );
+    }
+  };
 
   return (
     <div className="form-page">
       <div className="card form-card">
         <div className="card-body">
-          <h4 className="text-center mb-4 page-title">Add User</h4>
+
+          <h4 className="text-center mb-4">Add User</h4>
 
           <form onSubmit={submit}>
             <input
-              placeholder="Username"
               className="form-control mb-3"
               name="username"
+              placeholder="Username"
               value={form.username}
               onChange={handleChange}
               required
             />
 
             <input
-              placeholder="Password"
-              type="password"
               className="form-control mb-3"
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              className="form-control mb-3"
+              type="password"
               name="password"
+              placeholder="Password"
               value={form.password}
               onChange={handleChange}
               required
             />
 
             <select
-              className={`form-select mb-3 ${form.roleId === "" ? "text-muted" : "text-dark"}`}
-              name="roleId"           // ✅ MATCH BACKEND
+              className="form-select mb-3"
+              name="roleId"
               value={form.roleId}
               onChange={handleChange}
               required
             >
               <option value="">Select Role</option>
-
-              {roles.map((r) => (
+              {roles.map(r => (
                 <option key={r.id} value={r.id}>
                   {r.name}
                 </option>
               ))}
             </select>
 
-            <div className="d-flex justify-content-between mt-4">
+            <div className="d-flex justify-content-between">
               <button
                 type="button"
                 className="btn btn-secondary"

@@ -1,0 +1,86 @@
+/* ===== AVATAR (LOCKED SIZE) ===== */
+.avatar-img {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  display: block;
+}
+
+/* Wrapper */
+.profile-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Dropdown */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  padding: 12px;
+  z-index: 2000;
+
+  /* ✅ NAVY BLUE TEXT */
+  color: #0a1f44;
+}
+
+/* Dropdown items */
+.dropdown-item {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  cursor: pointer;
+
+  /* ✅ NAVY BLUE */
+  color: #0a1f44;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+/* Sections */
+.dropdown-section {
+  font-size: 14px;
+  padding: 6px 8px;
+
+  /* ✅ NAVY BLUE */
+  color: #0a1f44;
+}
+
+/* Forms */
+.form-box input {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 6px;
+
+  /* ✅ NAVY BLUE */
+  color: #0a1f44;
+}
+
+.form-box button {
+  width: 100%;
+}
+
+/* Link-style button */
+.link-btn {
+  background: none;
+  border: none;
+
+  /* ✅ NAVY BLUE */
+  color: #0a1f44;
+
+  padding: 0;
+  cursor: pointer;
+}
