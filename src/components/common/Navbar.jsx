@@ -1,11 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import "./page.css";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const role = localStorage.getItem("role");
   const email = localStorage.getItem("email") || "—";
   const username = localStorage.getItem("username") || "User";
+  const navigate=useNavigate();
 
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -27,7 +29,7 @@ const Navbar = () => {
   // 🔹 Logout
   const logout = () => {
     localStorage.clear();
-    window.location.href = "/login";
+    navigate("/login", { replace: true });
   };
 
   return (
