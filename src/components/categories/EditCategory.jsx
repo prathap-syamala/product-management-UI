@@ -12,7 +12,7 @@ const EditCategory = () => {
 
   useEffect(() => {
     const loadCategory = async () => {
-      const res = await axiosInstance.get(`/categories/${id}`);
+      const res = await axiosInstance.get(`/api/categories/${id}`);
       setName(res.data.name);
     };
 
@@ -22,7 +22,7 @@ const EditCategory = () => {
   const submit = async (e) => {
     e.preventDefault();
     try{
-      await axiosInstance.put(`/categories/${id}`, {
+      await axiosInstance.put(`/api/categories/${id}`, {
       name
     });
     toast.success("successfully Updated Category ✅");

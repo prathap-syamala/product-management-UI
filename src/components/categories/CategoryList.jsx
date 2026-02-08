@@ -40,7 +40,7 @@ const CategoryList = () => {
     if (!confirmDelete) return;
 
     try {
-      await axiosInstance.delete(`/categories/${id}`);
+      await axiosInstance.delete(`/api/categories/${id}`);
 
       setCategories(prev =>
         prev.filter(c => c.id !== id)
