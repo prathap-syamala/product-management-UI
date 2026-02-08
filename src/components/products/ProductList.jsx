@@ -89,52 +89,53 @@ const ProductList = () => {
         </div>
 
         {/* TABLE */}
-        <table className="table table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>#</th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Manufacturer</th>
-              <th>Price</th>
-              <th style={{ width: "180px" }}>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredProducts.length === 0 && (
+        <div className="table-responsive">
+          <table className="table table-striped">
+            <thead className="table-dark">
               <tr>
-                <td colSpan="6" className="text-center">No products found</td>
+                <th>#</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Manufacturer</th>
+                <th>Price</th>
+                <th style={{ width: "180px" }}>Actions</th>
               </tr>
-            )}
+            </thead>
 
-            {filteredProducts.map((p, index) => (
-              <tr key={p.id}>
-                <td>{index + 1}</td>
-                <td>{p.productCode}</td>
-                <td>{p.name}</td>
-                <td>{p.manufacturer}</td>
-                <td>₹{p.price}</td>
-                <td>
-                  <div className="d-flex gap-2">
-                    {(role === "Admin" || role === "Manager") && (
-                      <Link
-                        to={`/products/edit/${p.id}`}
-                        className="btn btn-sm btn-warning"
-                      >
-                        Edit
-                      </Link>
-                    )}
-                    {role === "Admin" && (
-                      <DeleteProduct id={p.id} onSuccess={reload} />
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <tbody>
+              {filteredProducts.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="text-center">No products found</td>
+                </tr>
+              )}
 
+              {filteredProducts.map((p, index) => (
+                <tr key={p.id}>
+                  <td>{index + 1}</td>
+                  <td>{p.productCode}</td>
+                  <td>{p.name}</td>
+                  <td>{p.manufacturer}</td>
+                  <td>₹{p.price}</td>
+                  <td>
+                    <div className="d-flex gap-2">
+                      {(role === "Admin" || role === "Manager") && (
+                        <Link
+                          to={`/products/edit/${p.id}`}
+                          className="btn btn-sm btn-warning"
+                        >
+                          Edit
+                        </Link>
+                      )}
+                      {role === "Admin" && (
+                        <DeleteProduct id={p.id} onSuccess={reload} />
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

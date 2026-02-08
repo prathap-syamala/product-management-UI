@@ -37,71 +37,71 @@ const FranchiseList = () => {
             Add Franchise
           </Link>
         </div>
-
-        <table className="table table-striped table-hover">
-          <thead className="table-dark">
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Location</th>
-              <th>Total Staff</th>
-              <th>Email</th>
-              <th>Phone No</th>
-              <th style={{ width: "120px" }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {franchises.map((f,index) => (
-              <tr key={f.id}>
-                <td>{index+1}</td>
-                <td>{f.franchiseName}</td>
-                <td>{f.location}</td>
-                <td>{f.totalStaff}</td>
-                <td>{f.email}</td>
-                <td>{f.phone}</td>
-                <td>
-                  <Link
-                    to={`/franchises/edit/${f.id}`}
-                    className="btn btn-sm btn-warning"
-                  >
-                    Edit
-                  </Link>
-
-                  <button
-                    className="btn btn-sm btn-danger"
-                    disabled={f.userCount > 0}
-                    onClick={async () => {
-                      if (!window.confirm("Delete this franchise?")) return;
-
-                      try {
-                        await deleteFranchise(f.id);
-
-                        setFranchises(prev =>
-                          prev.filter(x => x.id !== f.id)
-                        );
-
-                        // ✅ success toast
-                        toast.success("Franchise deleted successfully 🗑️", {
-                          toastId: "franchise-delete",
-                        });
-
-                      } catch (err) {
-                        // ❌ error toast
-                        toast.error(
-                          err.response?.data?.error || "Failed to delete franchise ❌"
-                        );
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </td>
-
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Total Staff</th>
+                <th>Email</th>
+                <th>Phone No</th>
+                <th style={{ width: "120px" }}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {franchises.map((f, index) => (
+                <tr key={f.id}>
+                  <td>{index + 1}</td>
+                  <td>{f.franchiseName}</td>
+                  <td>{f.location}</td>
+                  <td>{f.totalStaff}</td>
+                  <td>{f.email}</td>
+                  <td>{f.phone}</td>
+                  <td>
+                    <Link
+                      to={`/franchises/edit/${f.id}`}
+                      className="btn btn-sm btn-warning"
+                    >
+                      Edit
+                    </Link>
 
+                    <button
+                      className="btn btn-sm btn-danger"
+                      disabled={f.userCount > 0}
+                      onClick={async () => {
+                        if (!window.confirm("Delete this franchise?")) return;
+
+                        try {
+                          await deleteFranchise(f.id);
+
+                          setFranchises(prev =>
+                            prev.filter(x => x.id !== f.id)
+                          );
+
+                          // ✅ success toast
+                          toast.success("Franchise deleted successfully 🗑️", {
+                            toastId: "franchise-delete",
+                          });
+
+                        } catch (err) {
+                          // ❌ error toast
+                          toast.error(
+                            err.response?.data?.error || "Failed to delete franchise ❌"
+                          );
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
