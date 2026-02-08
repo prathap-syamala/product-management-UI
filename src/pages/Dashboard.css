@@ -98,7 +98,7 @@
   border-radius: 8px;
   margin-bottom: 10px;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
-  cursor: zoom-in;
+  cursor: default; 
 }
 
 
@@ -136,9 +136,4 @@
 
 /* ================= RESPONSIVE ================= */
 
-@media (max-width: 768px) {
-  .dashboard-product-image {
-    height: 150px;
-  }
 
-}
