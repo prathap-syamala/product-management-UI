@@ -7,7 +7,7 @@ const Navbar = () => {
   const role = localStorage.getItem("role");
   const email = localStorage.getItem("email") || "—";
   const username = localStorage.getItem("username") || "User";
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +28,10 @@ const Navbar = () => {
 
   // 🔹 Logout
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
     navigate("/login", { replace: true });
   };
 
